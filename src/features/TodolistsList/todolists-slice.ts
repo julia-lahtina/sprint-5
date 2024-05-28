@@ -18,9 +18,9 @@ const slice = createSlice({
       state.unshift({ ...action.payload.todolist, filter: "all", entityStatus: "idle" })
     },
     changeTodolistTitle: (state, action: PayloadAction<{ id: string; title: string }>) => {
-      const index = state.findIndex((todo) => todo.id === action.payload.id)
-      if (index !== -1) {
-        state[index].title = action.payload.title
+      const todo = state.find((todo) => todo.id === action.payload.id)
+      if (todo) {
+        todo.title = action.payload.title
       }
     },
     changeTodolistFilter: (state, action: PayloadAction<{ id: string; filter: FilterValuesType }>) => {
