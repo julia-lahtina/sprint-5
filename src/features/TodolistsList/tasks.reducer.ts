@@ -3,7 +3,7 @@ import { AppThunk } from "app/store";
 import { handleServerAppError, handleServerNetworkError } from "utils/error-utils";
 import { appActions } from "app/app.reducer";
 import { todolistsActions } from "features/TodolistsList/todolists.reducer";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { clearTasksAndTodolists } from "common/actions/common.actions";
 
 const initialState: TasksStateType = {};
@@ -27,7 +27,7 @@ const slice = createSlice({
         taskId: string;
         model: UpdateDomainTaskModelType;
         todolistId: string;
-      }>
+      }>,
     ) => {
       const tasks = state[action.payload.todolistId];
       const index = tasks.findIndex((t) => t.id === action.payload.taskId);
@@ -58,11 +58,18 @@ const slice = createSlice({
   },
 });
 
-export const tasksReducer = slice.reducer;
-export const tasksActions = slice.actions;
-
 // thunks
-export const fetchTasksTC =
+const fetchTasks = createAsyncThunk("tasks/fetchTasks", (todolistId: string, thunkAPI) => {
+  const { dispatch } = thunkAPI;
+  dispatch(appActions.setAppStatus({ status: "loading" }));
+  todolistsAPI.getTasks(todolistId).then((res) => {
+    const tasks = res.data.items;
+    dispatch(tasksActions.setTasks({ tasks, todolistId }));
+    dispatch(appActions.setAppStatus({ status: "succeeded" }));
+  });
+});
+
+/* export const fetchTasksTC =
   (todolistId: string): AppThunk =>
   (dispatch) => {
     dispatch(appActions.setAppStatus({ status: "loading" }));
@@ -72,7 +79,7 @@ export const fetchTasksTC =
       dispatch(appActions.setAppStatus({ status: "succeeded" }));
     });
   };
-
+ */
 export const removeTaskTC =
   (taskId: string, todolistId: string): AppThunk =>
   (dispatch) => {
@@ -147,3 +154,7 @@ export type UpdateDomainTaskModelType = {
 export type TasksStateType = {
   [key: string]: Array<TaskType>;
 };
+
+export const tasksReducer = slice.reducer;
+export const tasksActions = slice.actions;
+export const tasksThunks = { fetchTasks };
