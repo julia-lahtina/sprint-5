@@ -1,5 +1,5 @@
-import { tasksActions, tasksReducer, TasksStateType } from "features/TodolistsList/tasks.reducer";
-import { TaskPriorities, TaskStatuses } from "api/todolists-api";
+import { tasksActions, tasksReducer, TasksStateType, tasksThunks } from "features/TodolistsList/tasks.reducer";
+import { TaskPriorities, TaskStatuses, TaskType } from "api/todolists-api";
 import { todolistsActions } from "features/TodolistsList/todolists.reducer";
 
 let startState: TasksStateType = {};
@@ -192,19 +192,45 @@ test("empty arrays should be added when we set todolists", () => {
   expect(endState["1"]).toBeDefined();
   expect(endState["2"]).toBeDefined();
 });
-
-/* test("tasks should be added for todolist", () => {
-  const action = tasksActions.setTasks({ tasks: startState["todolistId1"], todolistId: "todolistId1" });
+//variant 1
+test("tasks should be added for todolist", () => {
+  //const action = tasksActions.setTasks({ tasks: startState["todolistId1"], todolistId: "todolistId1" });
+  //-------------------------------------------------------------------------------------------------------------------
+  const action = tasksThunks.fetchTasks.fulfilled(
+    { tasks: startState["todolistId1"], todolistId: "todolistId1" },
+    "requestId",
+    "todolistId1",
+  );
+  //-------------------------------------------------------------------------------------------------------------------
 
   const endState = tasksReducer(
     {
       todolistId2: [],
       todolistId1: [],
     },
-    action
+    action,
   );
 
   expect(endState["todolistId1"].length).toBe(3);
   expect(endState["todolistId2"].length).toBe(0);
 });
- */
+// variant 2
+test("tasks should be added for todolist - 2", () => {
+  type FetchTaskAction = Omit<ReturnType<typeof tasksThunks.fetchTasks.fulfilled>, "meta">;
+
+  const action: FetchTaskAction = {
+    type: tasksThunks.fetchTasks.fulfilled.type,
+    payload: { tasks: startState["todolistId1"], todolistId: "todolistId1" },
+  };
+
+  const endState = tasksReducer(
+    {
+      todolistId2: [],
+      todolistId1: [],
+    },
+    action,
+  );
+
+  expect(endState["todolistId1"].length).toBe(3);
+  expect(endState["todolistId2"].length).toBe(0);
+});

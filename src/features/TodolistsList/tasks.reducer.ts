@@ -63,13 +63,17 @@ const slice = createSlice({
 
 // thunks
 const fetchTasks = createAsyncThunk(`${slice.name}/fetchTasks`, async (todolistId: string, thunkAPI) => {
-  const { dispatch } = thunkAPI;
-  dispatch(appActions.setAppStatus({ status: "loading" }));
-  const res = await todolistsAPI.getTasks(todolistId);
-  const tasks = res.data.items;
-  dispatch(appActions.setAppStatus({ status: "succeeded" }));
-  // dispatch(tasksActions.setTasks({ tasks, todolistId }));
-  return { tasks, todolistId };
+  const { dispatch, rejectWithValue } = thunkAPI;
+  try {
+    dispatch(appActions.setAppStatus({ status: "loading" }));
+    const res = await todolistsAPI.getTasks(todolistId);
+    const tasks = res.data.items;
+    dispatch(appActions.setAppStatus({ status: "succeeded" }));
+    // dispatch(tasksActions.setTasks({ tasks, todolistId }));
+    return { tasks, todolistId };
+  } catch (err) {
+    return rejectWithValue(err);
+  }
 });
 
 /* export const fetchTasksTC =
