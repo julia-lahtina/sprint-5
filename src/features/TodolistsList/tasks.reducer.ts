@@ -1,4 +1,11 @@
-import { TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskModelType } from "api/todolists-api";
+import {
+  ArgsUpdateTask,
+  TaskPriorities,
+  TaskStatuses,
+  TaskType,
+  todolistsAPI,
+  UpdateTaskModelType,
+} from "api/todolists-api";
 import { AppThunk } from "app/store";
 import { handleServerAppError, handleServerNetworkError } from "utils/error-utils";
 import { appActions } from "app/app.reducer";
@@ -106,43 +113,43 @@ export const addTask = createAppAsyncThunk<{ task: TaskType }, { title: string; 
   },
 );
 
-export const updateTask = createAppAsyncThunk<
-  any,
-  { taskId: string; domainModel: UpdateDomainTaskModelType; todolistId: string }
->(`${slice.name}/updateTask`, async ({ taskId, domainModel, todolistId }, thunkAPI) => {
-  const { dispatch, getState, rejectWithValue } = thunkAPI;
-  try {
-    const state = getState();
-    const task = state.tasks[todolistId].find((t) => t.id === taskId);
-    if (!task) {
-      //throw new Error("task not found in the state");
-      console.warn("task not found in the state");
+export const updateTask = createAppAsyncThunk<ArgsUpdateTask, ArgsUpdateTask>(
+  `${slice.name}/updateTask`,
+  async ({ taskId, model, todolistId }, thunkAPI) => {
+    const { dispatch, getState, rejectWithValue } = thunkAPI;
+    try {
+      const state = getState();
+      const task = state.tasks[todolistId].find((t) => t.id === taskId);
+      if (!task) {
+        //throw new Error("task not found in the state");
+        console.warn("task not found in the state");
+        return rejectWithValue(null);
+      }
+
+      const apiModel: UpdateTaskModelType = {
+        deadline: task.deadline,
+        description: task.description,
+        priority: task.priority,
+        startDate: task.startDate,
+        title: task.title,
+        status: task.status,
+        ...model,
+      };
+
+      const res = await todolistsAPI.updateTask(todolistId, taskId, apiModel);
+
+      if (res.data.resultCode === 0) {
+        return { taskId, model: model, todolistId };
+      } else {
+        handleServerAppError(res.data, dispatch);
+        return rejectWithValue(null);
+      }
+    } catch (err) {
+      handleServerNetworkError(err, dispatch);
       return rejectWithValue(null);
     }
-
-    const apiModel: UpdateTaskModelType = {
-      deadline: task.deadline,
-      description: task.description,
-      priority: task.priority,
-      startDate: task.startDate,
-      title: task.title,
-      status: task.status,
-      ...domainModel,
-    };
-
-    const res = await todolistsAPI.updateTask(todolistId, taskId, apiModel);
-
-    if (res.data.resultCode === 0) {
-      return { taskId, model: domainModel, todolistId };
-    } else {
-      handleServerAppError(res.data, dispatch);
-      return rejectWithValue(null);
-    }
-  } catch (err) {
-    handleServerNetworkError(err, dispatch);
-    return rejectWithValue(null);
-  }
-});
+  },
+);
 
 //--------------------------Homework------------------------------------------------------------------------
 export const removeTaskTC =
