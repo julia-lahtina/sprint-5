@@ -7,12 +7,12 @@ import {
   UpdateTaskModelType,
 } from "api/todolists-api";
 import { AppThunk } from "app/store";
-import { handleServerAppError, handleServerNetworkError } from "utils/error-utils";
 import { appActions } from "app/app.reducer";
 import { todolistsActions } from "features/TodolistsList/todolists.reducer";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { clearTasksAndTodolists } from "common/actions/common.actions";
 import { createAppAsyncThunk } from "utils/createAppAsynkThunk";
+import { handleServerAppError, handleServerNetworkError } from "utils";
 
 const initialState: TasksStateType = {};
 
@@ -90,6 +90,12 @@ const fetchTasks = createAppAsyncThunk<{ tasks: TaskType[]; todolistId: string }
   };
  */
 
+enum ResultCode {
+  success = 0,
+  error = 1,
+  captcha = 10,
+}
+
 export const addTask = createAppAsyncThunk<{ task: TaskType }, { title: string; todolistId: string }>(
   `${slice.name}/addTask`,
   async ({ title, todolistId }, thunkAPI) => {
@@ -97,7 +103,7 @@ export const addTask = createAppAsyncThunk<{ task: TaskType }, { title: string; 
     try {
       dispatch(appActions.setAppStatus({ status: "loading" }));
       const res = await todolistsAPI.createTask(todolistId, title);
-      if (res.data.resultCode === 0) {
+      if (res.data.resultCode === ResultCode.success) {
         const task = res.data.data.item;
         // dispatch(tasksActions.addTask({ task })); - эту строку заменяем на return
         dispatch(appActions.setAppStatus({ status: "succeeded" }));
@@ -138,7 +144,7 @@ export const updateTask = createAppAsyncThunk<ArgsUpdateTask, ArgsUpdateTask>(
 
       const res = await todolistsAPI.updateTask(todolistId, taskId, apiModel);
 
-      if (res.data.resultCode === 0) {
+      if (res.data.resultCode === ResultCode.success) {
         return { taskId, model: model, todolistId };
       } else {
         handleServerAppError(res.data, dispatch);
