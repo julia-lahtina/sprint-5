@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppThunk } from "app/store";
 import { appActions } from "app/app.reducer";
 import { authAPI, LoginParamsType } from "features/auth/auth.api";
 import { clearTasksAndTodolists } from "common/actions";
@@ -75,7 +74,7 @@ const initializeApp = createAppAsyncThunk<{ isLoggedIn: boolean }, void>(
       if (res.data.resultCode === 0) {
         return { isLoggedIn: true };
       } else {
-        handleServerAppError(res.data, dispatch);
+        //handleServerAppError(res.data, dispatch);
         return rejectWithValue(null);
       }
     } catch (e) {
