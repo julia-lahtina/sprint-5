@@ -15,7 +15,7 @@ export const Login = () => {
 
   const formik = useFormik({
     validate: (values) => {
-      if (!values.email) {
+      /*   if (!values.email) {
         return {
           email: "Email is required",
         };
@@ -24,7 +24,7 @@ export const Login = () => {
         return {
           password: "Password is required",
         };
-      }
+      } */
     },
     initialValues: {
       email: "",
@@ -36,7 +36,9 @@ export const Login = () => {
         .unwrap()
         .then((res) => {})
         .catch((error: BaseResponse) => {
-          formikHelpers.setFieldError(error.fieldsErrors[0].field, error.fieldsErrors[0].error);
+          error.fieldsErrors.forEach((err) => {
+            formikHelpers.setFieldError(err.field, err.error);
+          });
         });
     },
   });
@@ -63,9 +65,9 @@ export const Login = () => {
             </FormLabel>
             <FormGroup>
               <TextField label="Email" margin="normal" {...formik.getFieldProps("email")} />
-              {formik.errors.email ? <div>{formik.errors.email}</div> : null}
+              {formik.errors.email ? <div style={{ color: "red" }}>{formik.errors.email}</div> : null}
               <TextField type="password" label="Password" margin="normal" {...formik.getFieldProps("password")} />
-              {formik.errors.password ? <div>{formik.errors.password}</div> : null}
+              {formik.errors.password ? <div style={{ color: "red" }}>{formik.errors.password}</div> : null}
               <FormControlLabel
                 label={"Remember me"}
                 control={<Checkbox {...formik.getFieldProps("rememberMe")} checked={formik.values.rememberMe} />}
