@@ -36,7 +36,7 @@ export const Login = () => {
         .unwrap()
         .then((res) => {})
         .catch((error: BaseResponse) => {
-          error.fieldsErrors.forEach((err) => {
+          error.fieldsErrors?.forEach((err) => {
             formikHelpers.setFieldError(err.field, err.error);
           });
         });

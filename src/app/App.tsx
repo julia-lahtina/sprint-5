@@ -20,20 +20,22 @@ import { useAppDispatch } from "common/hooks";
 import { selectIsLoggedIn } from "features/auth/auth.selectors";
 import { selectAppStatus, selectIsInitialized } from "app/app.selectors";
 import { authThunks } from "features/auth/auth.reducer";
+import { bindActionCreators } from "@reduxjs/toolkit";
+import { useActions } from "common/hooks/useAction";
 
 function App() {
   const status = useSelector(selectAppStatus);
   const isInitialized = useSelector(selectIsInitialized);
   const isLoggedIn = useSelector(selectIsLoggedIn);
 
-  const dispatch = useAppDispatch();
+  const { initializeApp, logout } = useActions();
 
   useEffect(() => {
-    dispatch(authThunks.initializeApp());
+    initializeApp();
   }, []);
 
   const logoutHandler = useCallback(() => {
-    dispatch(authThunks.logout());
+    logout();
   }, []);
 
   if (!isInitialized) {
