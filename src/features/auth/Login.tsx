@@ -6,6 +6,7 @@ import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, 
 import { useAppDispatch } from "common/hooks";
 import { selectIsLoggedIn } from "features/auth/auth.selectors";
 import { authThunks } from "features/auth/auth.reducer";
+import { BaseResponse } from "common/types";
 
 export const Login = () => {
   const dispatch = useAppDispatch();
@@ -30,8 +31,13 @@ export const Login = () => {
       password: "",
       rememberMe: false,
     },
-    onSubmit: (values) => {
-      dispatch(authThunks.login(values));
+    onSubmit: (values, formikHelpers) => {
+      dispatch(authThunks.login(values))
+        .unwrap()
+        .then((res) => {})
+        .catch((error: BaseResponse) => {
+          formikHelpers.setFieldError(error.fieldsErrors[0].field, error.fieldsErrors[0].error);
+        });
     },
   });
 
