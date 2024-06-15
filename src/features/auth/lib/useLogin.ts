@@ -1,14 +1,10 @@
 import { useActions } from "common/hooks";
 import { authThunks } from "../model/auth.slice";
 import { FormikHelpers, useFormik } from "formik";
-import { LoginParamsType } from "../api/auth.api";
 import { BaseResponseType } from "common/types";
+import { LoginParamsType } from "../api/auth.api";
 
-type FormikErrorType = {
-  email?: string;
-  password?: string;
-  rememberMe?: boolean;
-};
+export type FormikErrorType = Omit<Partial<LoginParamsType>, "captcha">;
 
 export const useLogin = () => {
   const { login } = useActions(authThunks);
