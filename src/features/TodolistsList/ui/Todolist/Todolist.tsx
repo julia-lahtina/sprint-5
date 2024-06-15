@@ -4,10 +4,10 @@ import { Button, IconButton } from "@mui/material";
 import { Task } from "./Task/Task";
 import { FilterValuesType, TodolistDomainType } from "features/TodolistsList/model/todolists.reducer";
 import { tasksThunks } from "features/TodolistsList/model/tasks.reducer";
-import { TaskType } from "features/TodolistsList/api/todolists.api";
 import { TaskStatuses } from "common/enums";
 import { useActions } from "common/hooks";
 import { AddItemForm, EditableSpan } from "common/components";
+import { TaskType } from "features/TodolistsList/api/tasksApi.types";
 
 type PropsType = {
   todolist: TodolistDomainType;
