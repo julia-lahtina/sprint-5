@@ -7,7 +7,7 @@ import { TodolistType, UpdateTodolistTitleArgType } from "../api/todolistsApi.ty
 import { todolistsApi } from "../api/todolistsApi";
 
 const fetchTodolists = createAppAsyncThunk<{ todolists: TodolistType[] }, void>(
-  "todo/fetchTodolists",
+  "todolists/fetchTodolists",
   async (_, thunkAPI) => {
     return thunkTryCatch(thunkAPI, async () => {
       const res = await todolistsApi.getTodolists();
@@ -17,7 +17,7 @@ const fetchTodolists = createAppAsyncThunk<{ todolists: TodolistType[] }, void>(
 );
 
 const addTodolist = createAppAsyncThunk<{ todolist: TodolistType }, string>(
-  "todo/addTodolist",
+  "todolists/addTodolist",
   async (title, thunkAPI) => {
     const { dispatch, rejectWithValue } = thunkAPI;
     return thunkTryCatch(thunkAPI, async () => {
@@ -32,7 +32,7 @@ const addTodolist = createAppAsyncThunk<{ todolist: TodolistType }, string>(
   },
 );
 
-const removeTodolist = createAppAsyncThunk<{ id: string }, string>("todo/removeTodolist", async (id, thunkAPI) => {
+const removeTodolist = createAppAsyncThunk<{ id: string }, string>("todolists/removeTodolist", async (id, thunkAPI) => {
   const { dispatch, rejectWithValue } = thunkAPI;
   return thunkTryCatch(thunkAPI, async () => {
     dispatch(todolistsActions.changeTodolistEntityStatus({ id, entityStatus: "loading" }));
@@ -47,7 +47,7 @@ const removeTodolist = createAppAsyncThunk<{ id: string }, string>("todo/removeT
 });
 
 const changeTodolistTitle = createAppAsyncThunk<UpdateTodolistTitleArgType, UpdateTodolistTitleArgType>(
-  "todo/changeTodolistTitle",
+  "todolists/changeTodolistTitle",
   async (arg, thunkAPI) => {
     const { dispatch, rejectWithValue } = thunkAPI;
     return thunkTryCatch(thunkAPI, async () => {
