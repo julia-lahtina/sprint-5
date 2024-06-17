@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { todolistsActions, todolistsThunks } from "features/TodolistsList/model/todolists.reducer";
+import { todolistsThunks } from "features/TodolistsList/model/todolists.reducer";
 import { Grid, Paper } from "@mui/material";
 import { AddItemForm } from "common/components";
 import { Navigate } from "react-router-dom";
@@ -44,7 +44,7 @@ export const TodolistsList = () => {
           return (
             <Grid item key={tl.id}>
               <Paper style={{ padding: "10px" }}>
-                <Todolist todolist={tl} tasks={allTodolistTasks} />
+                <Todolist todolist={tl} />
               </Paper>
             </Grid>
           );
