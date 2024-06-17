@@ -19,7 +19,7 @@ export const Todolist = function ({ todolist }: Props) {
   }, []);
 
   const addTaskCb = (title: string) => {
-    addTask({ title, todolistId: todolist.id });
+    return addTask({ title, todolistId: todolist.id });
   };
 
   return (

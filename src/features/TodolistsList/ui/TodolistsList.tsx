@@ -25,7 +25,7 @@ export const TodolistsList = () => {
   }, []);
 
   const addTodolistCb = (title: string) => {
-    addTodolist(title);
+    return addTodolist(title);
   };
 
   if (!isLoggedIn) {
@@ -39,8 +39,6 @@ export const TodolistsList = () => {
       </Grid>
       <Grid container spacing={3}>
         {todolists.map((tl) => {
-          let allTodolistTasks = tasks[tl.id];
-
           return (
             <Grid item key={tl.id}>
               <Paper style={{ padding: "10px" }}>
